@@ -5,7 +5,7 @@
 ######################
 LODESTONE := .lodestone
 
-SHELL := /opt/local/bin/bash
+SHELL := /usr/local/bin/bash
 
 FILE  := Golang
 ROOT  := $(PWD)
@@ -16,6 +16,7 @@ FILES := workspace
 .PHONY : TWJR JRTANGLE TANGLE JRWEAVE WEAVE TEXI INFO PDF HTML
 .PHONY : default twjr twjrkeep jrtangle tangle
 .PHONY : jrweave weave texi info pdf html newmakefile
+.PHONY : files
 
 default : TWJR
 
@@ -36,30 +37,38 @@ JRTANGLE : TANGLE
 TANGLE   : jrtangle
 jrtangle : tangle
 tangle   : $(LODESTONE) $(ROOT)/$(FILES)
+
+# Checks the relative time to determine if JRTANGLE should be rerun
 $(LODESTONE) : $(FILE).twjr
 	@printf "${YELLOW}Tangling $(FILE)...${CLEAR}\n"
 	@jrtangle $(FILE).twjr
 	@touch $(LODESTONE)
 	@printf "${GREEN}done tangling.${CLEAR}\n"
 
-# Extracts the source files using jrtangle
+# Checks for  the existence  of the ROOT/FILES  directory; extracts  files into
+# them if they don't  exist or are out of date; they must  be retouched if they
+# exist but  are out of date  because they will  not be remade or  updated when
+# files are extracted into them
+files : $(ROOT)/$(FILE).twjr
 $(ROOT)/$(FILES) :
-	@jrtangle $(FILE).twjr
-	@touch $(LODESTONE)
+	@printf "${YELLOW}Creating files...${CLEAR}\n"
+	@touch $(FILE).twjr
+	@make $(LODESTONE)
+	@touch $(ROOT)/$(FILES)
+	@printf "${GREEN}done creating files.${CLEAR}\n"
 
 # Extracts the Makefile if necessary by tangling; everything else
 # is thereafter deleted
-newmakefile : $(LODESTONE)
-	make allclean
+newmakefile : $(LODESTONE) allclean
 
 # Extracts the TEXI, and updates the nodes and sections with a batch call to
 # Emacs; it depends upon TWJR
 JRWEAVE : WEAVE
-WEAVE   : jrweave
+WEAVE   : TEXI
+TEXI    : jrweave
 jrweave : weave
-weave : TEXI
-TEXI  : texi
-texi  : $(FILE).texi
+weave   : texi
+texi    : $(FILE).texi
 $(FILE).texi : $(FILE).twjr
 	@printf "${YELLOW}Weaving $(FILE)...${CLEAR}\n"
 	@jrweave $(FILE).twjr > $(FILE).texi

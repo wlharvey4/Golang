@@ -1,8 +1,8 @@
 \input texinfo   @c -*- mode: texinfo -*-
 
 @c FILE    Golang.twjr
-@c VERSION 0.1.0
-@c DATE    2018-11-08T22:55
+@c VERSION 0.1.1
+@c DATE    2018-11-09T11:00
 @c AUTHOR  wlharvey4
 
 @c *****************************************************************************
@@ -143,6 +143,7 @@
 
 
 
+
 @c *****************************************************************************
 @c SECTIONING / INDICES
 @c *****************************************************************************
@@ -230,17 +231,18 @@
 @initial_setup
 printf "${YELLOW}In initial_setup...${CLEAR}\n"
 
-ROOT="$PWD"
+ROOT=${PWD}
 WS="workspace"
 SUBDIRS="src bin"
 
-for file in ${SUBDIRS}
+for subdir in ${SUBDIRS}
 do
-    ! [ -d ${ROOT}/${WS}/$file ] && {
-      mkdir -vp ${ROOT}/${WS}/${file} && \
-      printf "${BLUEBOLD}created directory ${PURPLEBOLD}."$(basename ${ROOT})"/${WS}/${file}${CLEAR}\n"
+    ! [ -d ${ROOT}/${WS}/${subdir} ] && {
+      mkdir -vp ${ROOT}/${WS}/${subdir} && \
+      printf "${BLUEBOLD}created directory ${PURPLEBOLD}."$(basename ${ROOT})"/${WS}/${subdir}${CLEAR}\n" || \
+      printf "${RED}failed to create directory ${PURPLEBOLD}${ROOT}/${WS}/${subdir}${CLEAR}\n"
     } || \
-      printf "${BLUE}file ${PURPLE}."$(basename ${ROOT})"/${WS}/${file} exists${CLEAR}\n"
+      printf "${BLUE}file ${PURPLE}."$(basename ${ROOT})"/${WS}/${subdir} exists${CLEAR}\n"
 done
 
 printf "${GREEN}initial setup done.${CLEAR}\n"
@@ -278,7 +280,7 @@ printf "${GREEN}initial setup done.${CLEAR}\n"
 @c       ~~Forward
 @c       ~~Preface
 @c     --- paginated --- numbered ---
-@c     ..Main Matter 
+@c     ..Main Matter
 @c       ~~Chapters
 @c         >>Sections
 @c           ^^Subsections
@@ -387,10 +389,8 @@ URL: @url{http://www.example.com/} @*
 @end ifnotdocbook
 @c <------------------------------------->
 
-
 @end titlepage
 @c /////////////////////////////////////////////////////////////////////////////
-
 
 
 
@@ -455,10 +455,9 @@ web development.
 
 @c -----------------------------------------------------------------------------
 
-
 @c <------------------------------------->
-@c                MENUS
 
+@c                MENUS
 @menu
 
 @detailmenu
@@ -1082,6 +1081,66 @@ or more source packages.
 @appendix The Makefile
 @cindex makefile
 
+The @file{Makefile} has five initial top-level targets built in as defaults:
+
+@enumerate
+
+@item
+Variable Definitions
+
+@itemize
+@item
+FILE: the name of this source document, without extension
+@item
+ROOT: the  name of the  root directory, which  defaults to the  present working
+directory, $(PWD)
+@item
+FILES: the  name of  the root directory  for the files  created in  this source
+document, which defaults to @file{files}
+@item
+LODESTONE: a reference file to help @file{Makefile} determine when to recompile
+this source document or the @file{TEXI} file
+@end itemize
+
+@item
+The Default Target: @command{twjr}, described below
+
+@item
+The TWJR Targets
+
+@table @command
+@item twjrkeep
+@command{jrtangle jrweave info pdf html}
+@item twjr
+@command{twjrkeep dirclean}
+@item jrtangle
+@command{jrtangle $(FILE).twjr}
+@item newmakefile
+@command{jrtangle allclean}
+@end table
+
+@item
+The Clean Targets
+
+@enumerate
+@item
+Clean
+@item
+Dirclean
+@item
+Distclean
+@item
+Allclean
+@end enumerate
+
+@item
+The Applications Hook
+
+@end enumerate
+
+
+
+
 @(Makefile@)=
 # MAKEFILE FILE CHUNKS
 ######################
@@ -1128,7 +1187,7 @@ not be changed or otherwise touched (pun intended).
 ######################
 LODESTONE := .lodestone
 
-SHELL := /opt/local/bin/bash
+SHELL := /usr/local/bin/bash
 
 FILE  := Golang
 ROOT  := $(PWD)
@@ -1204,6 +1263,7 @@ which  is  directly  responsible  for  producing  the  output  files.   If  the
 .PHONY : TWJR JRTANGLE TANGLE JRWEAVE WEAVE TEXI INFO PDF HTML
 .PHONY : default twjr twjrkeep jrtangle tangle
 .PHONY : jrweave weave texi info pdf html newmakefile
+.PHONY : files
 
 default : TWJR
 
@@ -1264,30 +1324,38 @@ JRTANGLE : TANGLE
 TANGLE   : jrtangle
 jrtangle : tangle
 tangle   : $(LODESTONE) $(ROOT)/$(FILES)
+
+# Checks the relative time to determine if JRTANGLE should be rerun
 $(LODESTONE) : $(FILE).twjr
 	@printf "${YELLOW}Tangling $(FILE)...${CLEAR}\n"
 	@jrtangle $(FILE).twjr
 	@touch $(LODESTONE)
 	@printf "${GREEN}done tangling.${CLEAR}\n"
 
-# Extracts the source files using jrtangle
+# Checks for  the existence  of the ROOT/FILES  directory; extracts  files into
+# them if they don't  exist or are out of date; they must  be retouched if they
+# exist but  are out of date  because they will  not be remade or  updated when
+# files are extracted into them
+files : $(ROOT)/$(FILE).twjr
 $(ROOT)/$(FILES) :
-	@jrtangle $(FILE).twjr
-	@touch $(LODESTONE)
+	@printf "${YELLOW}Creating files...${CLEAR}\n"
+	@touch $(FILE).twjr
+	@make $(LODESTONE)
+	@touch $(ROOT)/$(FILES)
+	@printf "${GREEN}done creating files.${CLEAR}\n"
 
 # Extracts the Makefile if necessary by tangling; everything else
 # is thereafter deleted
-newmakefile : $(LODESTONE)
-	make allclean
+newmakefile : $(LODESTONE) allclean
 
 # Extracts the TEXI, and updates the nodes and sections with a batch call to
 # Emacs; it depends upon TWJR
 JRWEAVE : WEAVE
-WEAVE   : jrweave
+WEAVE   : TEXI
+TEXI    : jrweave
 jrweave : weave
-weave : TEXI
-TEXI  : texi
-texi  : $(FILE).texi
+weave   : texi
+texi    : $(FILE).texi
 $(FILE).texi : $(FILE).twjr
 	@printf "${YELLOW}Weaving $(FILE)...${CLEAR}\n"
 	@jrweave $(FILE).twjr > $(FILE).texi
