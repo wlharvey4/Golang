@@ -1,8 +1,8 @@
 \input texinfo   @c -*- mode: texinfo -*-
 
 @c FILE    Golang.twjr
-@c VERSION 0.1.1
-@c DATE    2018-11-09T11:00
+@c VERSION 0.1.2
+@c DATE    2018-11-09T18:40
 @c AUTHOR  wlharvey4
 
 @c *****************************************************************************
@@ -735,57 +735,17 @@ in this sentence.  Finally, file names are indicated like this:
 @c                              INTRODUCTION
 
 @node Introduction
-@chapter Introduction
-
-
-
-
-@c -----------------------------------------------------------------------------
-
-@node Google Go Specialialization
-@section Programming with Google Go Specialization
-@cindex specialization, Google Go
-
-@heading Welcome To The Specialization
-
-This intermediate-level, three-course sequence  is designed for individuals who
-have had some experience programming in  another language but now wish to learn
-about the  features and  capabilities of  Go. The courses  provide a  review of
-essential  programming concepts,  as needed,  to ensure  that all  learners are
-sufficiently comfortable  with the  basics before  learning about  the features
-that are peculiar  to Go. (Please note that the  original specialization design
-called for four courses but development  of the fourth course has been deferred
-to a later  time. For now, please disregard the  occasional references that the
-instructor makes to this fourth course.)
-
-@subheading First Course of the Specialization: Getting Started
-@cindex specialization, first course
-
-The first course, Getting Started with Go, introduces the basic elements of the
-language including  unique features such  as slices  that are not  available in
-other  programming environments.  The  second course,  Functions, Methods,  and
-Interfaces in Go, expands your knowledge  of Go with a focus on object-oriented
-features such as classes and encapsulation,  and allows you to practice writing
-code to  solve practical problems. The  third and final course,  Concurrency in
-Go, shows you how to write Go  code that executes more rapidly through parallel
-execution in multi-processor environments.
-
-The courses feature video lectures by  Professor Ian Harris from the University
-of   California,   Irvine  and   are   accompanied   by  automatically   graded
-multiple-choice quizzes  and peer-reviewed programming assignments.  While most
-of the information needed to  complete the programming assignments is presented
-within the context of the courses (i.e. by the lecturer), we encourage students
-to  take  advantage  of  the  many resources  that  are  available  online  for
-clarification and further learning.
-
+@unnumbered Introduction
 
 
 
 @c -----------------------------------------------------------------------------
 
-@node Getting Started
-@section Getting Started
-@cindex getting started
+@node Installation
+@section Installing Go
+@cindex installation
+@cindex download
+@cindex downloads page
 
 @url{https://golang.org/doc/install, Getting Started}
 
@@ -804,9 +764,9 @@ installation instructions.
 
 @c .....................................
 
-@node Installation
+@node Installation Instructions
 @subsection Installation Instructions
-@cindex installation
+@cindex installation instructions
 
 @heading Install the @code{go} tools.
 
@@ -882,65 +842,114 @@ func main() {
 @cindex hello, world
 
 The following @file{Makefile} targets build,  intall, and run ``Hello, World!''
-in Go.   There must exist  a @dfn{workspace}, which  is defined as  a directory
-structure containing two directories:  @file{src} and @file{bin}.  Packages are
-placed  inside  the  @file{src}  directory, and  the  @env{gopath}  environment
-variable must be set  to the top of the workspace.  To  process a package, move
-into the package directory, and  initiate the command @command{go build}.  This
-will build an executable next to the  souce file.  To place the executable into
-the  @file{bin}  directory,  execute  the command  @command{go  install}.   The
-executable can be run by typing its name: @command{./hello}.
+in Go.  There must  exist a  @dfn{workspace}, which is  defined as  a directory
+structure containing  two directories: @file{src} and  @file{bin}. Packages are
+placed  inside  the  @file{src}  directory, and  the  @env{GOPATH}  environment
+variable must be set  to the workspace directory. One way  to process a package
+in  Go  is  to  move  into  the package  directory  and  initiate  the  command
+@command{go build}.  This will build an  executable next to the  souce file. To
+place  the  executable  into  the @file{bin}  directory,  execute  the  command
+@command{go  install}.  The   executable  can  be  run  by   typing  its  name:
+@command{./hello} in the @file{bin} directory.
 
-@<Makefile---Applications@>=
-# Go Hello World
-################
+Another  way to  process  a package  is  to name  it as  an  argument from  the
+workspace directory,  such as @samp{go  build hello}, @samp{go  install hello},
+and @samp{go run hello}, for example. Executing the latter command will compile
+and run the package, but will not save it. The target @command{run-hello-world}
+does  it this  way, whereas  the  target @command{hello-world}  moves into  the
+directories and compiles and runs the saved executable.
+
+In  @file{Makefile}   terms,  the   targets  are:   @command{make  buildhello},
+@command{make  installhello},  @command{make  hello-world},  and  @command{make
+run-hello-world}.
+
+@subheading Makefile Targets for Hello, World!
+
+@<Makefile---Applications--Hook@>=
+# APPLICATION: HELLO, WORLD!
+############################
 .PHONY   : hello.go buildhello insttallhello runhello hello-world
 
+# <------------------------------------->
+#              hello.go
+
 # installs the source
+
 hello.go : $(ROOT)/$(FILES)/src/hello/hello.go
-$(ROOT)/$(FILES)/src/hello/hello.go :
-	make JRTANGLE
+$(ROOT)/$(FILES)/src/hello/hello.go : $(FILE).twjr
+	@touch $(FILE).twjr
+	@make $(LODESTONE)
+
+
+# <------------------------------------->
+#               buildhello
 
 # builds an executable from the source
+
 buildhello : $(ROOT)/$(FILES)/src/hello/hello
-$(ROOT)/$(FILES)/src/hello/hello : $(ROOT)/$(FILES)/src/hello/hello.go
+$(ROOT)/$(FILES)/src/hello/hello : $(ROOT)/$(FILES)/src/hello/hello.go $(FILE).twjr
 	@printf "${YELLOW}Building 'hello' from 'hello.go'..."
-	@cd $(ROOT)/$(FILES)/src/hello && go build && printf "${GREEN}done.\n"
+	@cd $(ROOT)/$(FILES)/src/hello && go build hello && printf "${GREEN}done.${CLEAR}\n" || printf "${RED}failed.${CLEAR}\n"
 
-@
 
-@heading Note on Irregular Target Dependency
+# <------------------------------------->
+#              installhello
 
-The @command{go install} command physically moves the executable created by the
-@command{go  build}  command  from  the  @file{src/hello}  directory  into  the
-@file{bin} directory.  Normally, the @command{installhello} target would have a
-dependency  of the  executable in  the @file{src/hello}  directory, because  it
-needs to be there for it to do its thing.  Because the executable is moved from
-@file{workspace/src/hello}   into  @file{workspace/bin}   by  the   @command{go
-install}   command,  the   Makefile  gets   confused  on   a  second   call  of
-@command{installhello},  in  that even  though  the  executable exists  in  the
-@file{bin} directory, and  nothing needs to be done, it  nonetheless starts the
-whole compilation process over.  To avoid this, create a rule test instead that
-looks for the executable in @file{workspace/bin},  and only if it does not find
-it should it then initiate the compilation process.
+# installs the executable into the 'bin' directory;
+# because the 'install' command can move the executable from one directory into
+# another, the rule below is convulated as it tries to avoid recompiling unless
+# necessary, by checking for an executable in, first the 'src/hello' directory,
+# and then the 'bin' directory.
 
-@<Makefile---Applications@>=
-# installs the executable into the 'bin' directory
 installhello : $(ROOT)/$(FILES)/bin/hello
-$(ROOT)/$(FILES)/bin/hello :
-	@if ! [ -e $(ROOT)/$(FILES)/bin/hello ]; then make buildhello; fi
-	@printf "${YELLOW}Installing 'hello' executable in 'bin/'..."
-	@cd $(ROOT)/$(FILES)/src/hello && go install && printf "${GREEN}done.\n"
+$(ROOT)/$(FILES)/bin/hello : $(FILE).twjr hello.go
+	@printf "${YELLOW}Installing \'hello\' executable in \'bin/\'...${CLEAR}\n"
+	@[ -e ${ROOT}/${FILES}/src/hello/hello ] && \
+	{\
+	    printf "${BLUE}\'hello\' executable exists in \'src/hello\'; moving it into \'bin\'...${CLEAR}"; \
+	    cd ${ROOT}/${FILES}/src/hello && \
+	    {\
+		printf "${GREEN}successfully cd\'ed into \'...src/hello\'; now moving it...${CLEAR}"; \
+		go install && \
+		    printf "${GREEN}done moving.${CLEAR}\n" || \
+		    printf "${RED}failed to move.${CLEAR}\n"; \
+	    } || printf "${RED}unable to cd to into .src/hello${CLEAR}\n"; \
+	} || {\
+	    printf "${PURPLE}\'hello\' executable does not exist in \'...src/hello/\' so checking \'...bin/\'...${CLEAR}"; \
+	    [ -e ${ROOT}/${FILES}/bin/hello ] && \
+	    {\
+	        printf "${BLUE}\'hello\' executable exists in \'bin/\'${CLEAR}\n"; \
+	    } || {\
+		printf "${PURPLE}\'hello\' executable does not exist in \'...bin/\'...${CLEAR}\n"; \
+		printf "${BLUE}compiling and installing...${CLEAR}"; \
+		go install hello && printf "${GREEN}successfully compiled and installed \'hello\' executable in \'...bin/\'.${CLEAR}\n"; \
+	    };\
+	}
+	@printf "${GREEN}done installing.${CLEAR}\n"
+
+
+# <------------------------------------->
+#               hello-world
 
 # run the executable 'hello'
+
 hello-world : installhello
-	@printf "${YELLOW}Executing 'hello'...${CLEAR}\n"
+	@printf "${YELLOW}Executing \'hello\' with manual compilation...${CLEAR}\n"
 	@{ cd $(ROOT)/$(FILES)/bin; \
-	  ./hello; \
-	  printf "${GREEN}done.${CLEAR}"; \
+	  ./hello && \
+	    printf "${GREEN}done.${CLEAR}\n" || \
+	    printf "${RED}failed.${CLEAR}\n"; \
 	}
 
+run-hello-world : hello.go
+	@printf "${YELLOW}Executing \'go run hello\' with automatic compilation...${CLEAR}\n"
+	@go run hello && \
+	    printf "${GREEN}done.${CLEAR}\n" || \
+	    printf "${RED}failed.${CLEAR}\n"
+
 @
+
+
 
 
 @c END Chapter Introduction
@@ -956,15 +965,61 @@ hello-world : installhello
 @c *****************************************************************************
 @c                              CHAPTER ONE
 
-@node Getting Started Google Go
-@chapter Getting Started With Google Go
+@node Programming With Google Go
+@chapter Coursera Specialization: Programming With Google Go
+@cindex Programming With Google Go Specialization
+@cindex Specialization, Programming With Google Go
+
+@heading Welcome To The Specialization: Programming With Google Go
+
+This intermediate-level, three-course sequence  is designed for individuals who
+have had some experience programming in  another language but now wish to learn
+about the  features and  capabilities of  Go. The courses  provide a  review of
+essential  programming concepts,  as needed,  to ensure  that all  learners are
+sufficiently comfortable  with the  basics before  learning about  the features
+that are peculiar  to Go. (Please note that the  original specialization design
+called for four courses but development  of the fourth course has been deferred
+to a later  time. For now, please disregard the  occasional references that the
+instructor makes to this fourth course.)
+
+@subheading The Courses in the Specialization
+
+The first course, @emph{Getting Started with Go}, introduces the basic elements
+of the language including unique features such as slices that are not available
+in other  programming environments.  @xref{Getting Started} The  second course,
+@emph{Functions, Methods, and  Interfaces in Go}, expands your  knowledge of Go
+with a focus on object-oriented features such as classes and encapsulation, and
+allows   you  to   practice   writing  code   to   solve  practical   problems.
+@xref{Functions   Methods  and   Interfaces}  The   third  and   final  course,
+@emph{Concurrency in  Go}, shows you  how to write  Go code that  executes more
+rapidly   through   parallel   execution   in   multi-processor   environments.
+@xref{Concurrency}
+
+@subheading The Instructor
+
+The courses feature video lectures by  Professor Ian Harris from the University
+of   California,   Irvine  and   are   accompanied   by  automatically   graded
+multiple-choice quizzes  and peer-reviewed programming assignments.  While most
+of the information needed to  complete the programming assignments is presented
+within the context of the courses (i.e. by the lecturer), we encourage students
+to  take  advantage  of  the  many resources  that  are  available  online  for
+clarification and further learning.
+
+
+
+
+@c -----------------------------------------------------------------------------
+@c      			Section: Getting Started
+
+@node Getting Started
+@section Course One: Getting Started With Google Go
+@cindex Getting Started With Google Go, First Course
+@cindex Specialization, First Course
 
 @url{https://www.coursera.org/learn/golang-getting-started/home/welcome,
 Getting Started with Google Go}
 
-Taught by Ian Harris.
-
-@heading Welcome to Getting Started With Google Go
+@heading Welcome to Getting Started With Google Go From the Instructor
 
 Welcome  to Getting  Started  with  Go! You’re  joining  thousands of  learners
 currently enrolled in the course. I'm excited to have you in the class and look
@@ -981,7 +1036,7 @@ Coursera platform, visit the Learner Help Center.
 
 Good luck as you get started, and I hope you enjoy the course!
 
-@heading Welcome from the Instructor, Ian Harris
+@subheading Welcome Video from the Instructor
 
 Welcome to the course, Course One. The point of this course is to give you some
 first-tier working knowledge of the Go language and how to use it. I'm assuming
@@ -1000,11 +1055,7 @@ and you should  be able to program something  and get a feel for it  and see if
 you even like this language at all, and if you can be comfortable with it.
 
 
-
-
-
-@c -----------------------------------------------------------------------------
-@c                              Section One
+@c .....................................
 
 @node Installing Golang
 @section Installing Golang
@@ -1046,10 +1097,32 @@ or more source packages.
 
 
 
+@c -----------------------------------------------------------------------------
+
+@node Functions Methods and Interfaces
+@section Course Two: Functions, Methods, and Interfaces in Go
+@cindex Specialization, Course Two
+@cindex Functions Methods and Interfaces
+
+
+
+
+@c -----------------------------------------------------------------------------
+
+@node Concurrency
+@section Concurrency in Go
+@cindex Specialization, Course Three
+@cindex Concurrency in Go
+
+
+
+
+
+
+
 
 @c END Chapter First
 @c /////////////////////////////////////////////////////////////////////////////
-
 
 @c END CHAPTERS
 @c /////////////////////////////////////////////////////////////////////////////
@@ -1310,46 +1383,80 @@ any desired target.
 # TWJR TARGETS
 ##############
 
+# <------------------------------------->
+#               twjrkeep
+
 # Process everything; don't remove any build or log files;
 twjrkeep : jrtangle jrweave info pdf html
 
+
+# <------------------------------------->
+#                 TWJR
+#                DEFAULT
+
 # Process everything; remove build files and logs.
+
 TWJR : twjr
 twjr : twjrkeep dirclean
+
+
+# <------------------------------------->
+#               JRTANGLE
 
 # JRTANGLE depends upon the LODESTONE and the ROOT FILES directory;
 # if either is missing or out of date, then JRTANGLE will be run to
 # extract its files.
+
 JRTANGLE : TANGLE
 TANGLE   : jrtangle
 jrtangle : tangle
-tangle   : $(LODESTONE) $(ROOT)/$(FILES)
+tangle   : $(LODESTONE) files
+
+
+# <------------------------------------->
+#               LODESTONE
 
 # Checks the relative time to determine if JRTANGLE should be rerun
+
 $(LODESTONE) : $(FILE).twjr
 	@printf "${YELLOW}Tangling $(FILE)...${CLEAR}\n"
 	@jrtangle $(FILE).twjr
 	@touch $(LODESTONE)
 	@printf "${GREEN}done tangling.${CLEAR}\n"
 
+
+# <------------------------------------->
+#                files
+
 # Checks for  the existence  of the ROOT/FILES  directory; extracts  files into
 # them if they don't  exist or are out of date; they must  be retouched if they
 # exist but  are out of date  because they will  not be remade or  updated when
 # files are extracted into them
-files : $(ROOT)/$(FILE).twjr
-$(ROOT)/$(FILES) :
+
+files : $(ROOT)/$(FILES)
+$(ROOT)/$(FILES) :  $(FILE).twjr
 	@printf "${YELLOW}Creating files...${CLEAR}\n"
 	@touch $(FILE).twjr
 	@make $(LODESTONE)
 	@touch $(ROOT)/$(FILES)
 	@printf "${GREEN}done creating files.${CLEAR}\n"
 
+
+# <------------------------------------->
+#              newmakefile
+
 # Extracts the Makefile if necessary by tangling; everything else
 # is thereafter deleted
+
 newmakefile : $(LODESTONE) allclean
+
+
+# <------------------------------------->
+#              JRWEAVE
 
 # Extracts the TEXI, and updates the nodes and sections with a batch call to
 # Emacs; it depends upon TWJR
+
 JRWEAVE : WEAVE
 WEAVE   : TEXI
 TEXI    : jrweave
@@ -1365,8 +1472,14 @@ $(FILE).texi : $(FILE).twjr
 	  (texinfo-master-menu 1) (save-buffer 0))' 2> batch.log
 	@printf "${GREEN}done updating.${CLEAR}\n"
 
+
+# <------------------------------------->
+#                 INFO
+#               OPENINFO
+
 # Runs makeinfo on the TEXI file;
 # Opens the INFO file in Emacs
+
 INFO : info
 info : $(FILE).info
 $(FILE).info : $(FILE).texi
@@ -1378,8 +1491,14 @@ openinfo : INFO
 	@emacsclient -s server --eval '(info "($(ROOT)/$(FILE).info)top")'
 	@printf "${GREEN}done${CLEAR}\n"
 
+
+# <------------------------------------->
+#                  PDF
+#                OPENPDF
+
 # Runs pdftexi2dvi on the TEXI file;
 # Opens the PDF file
+
 PDF : pdf
 pdf : $(FILE).pdf
 $(FILE).pdf : $(FILE).texi
@@ -1391,8 +1510,14 @@ openpdf : PDF
 	@open $(FILE).pdf
 	@printf "${GREEN}done${CLEAR}\n"
 
+
+# <------------------------------------->
+#                 HTML
+#               OPENHTML
+
 # Runs makeinfo --html on the TEXI file;
 # Opens index.html in a browser
+
 HTML : html
 html : $(FILE)/index.html
 $(FILE)/index.html : $(FILE).texi
@@ -1425,16 +1550,27 @@ directories, leaving just  the @file{TWJR} file, the @file{TEXI}  file, and the
 except the @acronym{TWJR} file and the @file{Makefile}.
 
 @<Makefile---Clean Targets@>=
+# CLEAN TARGETS
+################
 .PHONY : clean dirclean distclean worldclean allclean
 
+# <------------------------------------->
+#                clean
+
 # remove backup files
+
 clean :
 	@printf "${WHITEBOLD}Cleaning...${CYAN}\n"
 	@rm -f *~ .*~ #*#
 	@printf "${GREEN}done cleaning.${CLEAR}\n"
 
+
+# <------------------------------------->
+#               dirclean
+
 # after clean: remove all build and miscellaneous files, leaving only
 # TWJR, TEXI, INFO, HTML, PDF, Makefile & the source documents.
+
 dirclean : clean
 	@printf "${WHITEBOLD}Dir-cleaning...${CYAN}\n"
 	@for file in *; do         \
@@ -1447,13 +1583,23 @@ dirclean : clean
 	done
 	@printf "${GREEN}done dir-cleaning.${CLEAR}\n"
 
+
+# <------------------------------------->
+#                distclean
+
 # after dirclean: remove INFO, HTML, and PDF, and FILES
+
 distclean : dirclean
 	@printf "${WHITEBOLD}Dist-cleaning...${CYAN}\n"
 	@rm -vfr $(FILE) $(FILE).info $(FILE).pdf $(ROOT)/$(FILES)
 	@printf "${GREEN}done dist-cleaning.${CLEAR}\n"
 
+
+# <------------------------------------->
+#                allclean
+
 # allclean: remove TEXI, leaving only TWJR and Makefile
+
 allclean : distclean
 	@printf "${WHITEBOLD}Cleaning all...${CYAN}\n"
 	@rm -vfr $(FILE).texi
@@ -1476,7 +1622,14 @@ a hook  that can  be used in  another part  of the source  document; this  is a
 fundamental feature of literate programming.
 
 @<Makefile---Applications@>=
+# APPLICATION TARGETS
+######################
+
+@<Makefile---Applications--Hook@>
+
 @
+
+
 
 
 @c END The Makefile
