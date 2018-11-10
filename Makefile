@@ -5,7 +5,7 @@
 ######################
 LODESTONE := .lodestone
 
-SHELL := /usr/local/bin/bash
+SHELL := $$(which bash)
 
 FILE  := Golang
 ROOT  := $(PWD)
@@ -229,7 +229,7 @@ allclean : distclean
 
 # APPLICATION: HELLO, WORLD!
 ############################
-.PHONY   : hello.go buildhello insttallhello runhello hello-world
+.PHONY   : hello.go buildhello installhello runhello hello-world
 
 # <------------------------------------->
 #              hello.go
@@ -245,48 +245,35 @@ $(ROOT)/$(FILES)/src/hello/hello.go : $(FILE).twjr
 # <------------------------------------->
 #               buildhello
 
-# builds an executable from the source
+# manually builds an executable from the source and leaves it in src/hello next
+# to  hello.go;  the  go  tool  will  find it  and  move  it  during  a  manual
+# installation call.
 
 buildhello : $(ROOT)/$(FILES)/src/hello/hello
 $(ROOT)/$(FILES)/src/hello/hello : $(ROOT)/$(FILES)/src/hello/hello.go $(FILE).twjr
 	@printf "${YELLOW}Building 'hello' from 'hello.go'..."
-	@cd $(ROOT)/$(FILES)/src/hello && go build hello && printf "${GREEN}done.${CLEAR}\n" || printf "${RED}failed.${CLEAR}\n"
+	@cd $(ROOT)/$(FILES)/src/hello && \
+	  go build hello && \
+	    { touch $(ROOT)/$(FILES)/src/hello/hello.go; \
+	      printf "${GREEN}done.${CLEAR}\n"; } ||\
+	    printf "${RED}failed.${CLEAR}\n"
 
 
 # <------------------------------------->
 #              installhello
 
-# installs the executable into the 'bin' directory;
-# because the 'install' command can move the executable from one directory into
-# another, the rule below is convulated as it tries to avoid recompiling unless
-# necessary, by checking for an executable in, first the 'src/hello' directory,
-# and then the 'bin' directory.
+# installs the executable into the 'bin' directory; note that the dependency of
+# hello.go should normally be hello, but because the go tool figures things out
+# on its  own, it  will actually  skip the manual  build phase  'buildhello' if
+# hello.go is current and build and move the executable on its own.
 
 installhello : $(ROOT)/$(FILES)/bin/hello
-$(ROOT)/$(FILES)/bin/hello : $(FILE).twjr hello.go
-	@printf "${YELLOW}Installing \'hello\' executable in \'bin/\'...${CLEAR}\n"
-	@[ -e ${ROOT}/${FILES}/src/hello/hello ] && \
-	{\
-	    printf "${BLUE}\'hello\' executable exists in \'src/hello\'; moving it into \'bin\'...${CLEAR}"; \
-	    cd ${ROOT}/${FILES}/src/hello && \
-	    {\
-		printf "${GREEN}successfully cd\'ed into \'...src/hello\'; now moving it...${CLEAR}"; \
-		go install && \
-		    printf "${GREEN}done moving.${CLEAR}\n" || \
-		    printf "${RED}failed to move.${CLEAR}\n"; \
-	    } || printf "${RED}unable to cd to into .src/hello${CLEAR}\n"; \
-	} || {\
-	    printf "${PURPLE}\'hello\' executable does not exist in \'...src/hello/\' so checking \'...bin/\'...${CLEAR}"; \
-	    [ -e ${ROOT}/${FILES}/bin/hello ] && \
-	    {\
-	        printf "${BLUE}\'hello\' executable exists in \'bin/\'${CLEAR}\n"; \
-	    } || {\
-		printf "${PURPLE}\'hello\' executable does not exist in \'...bin/\'...${CLEAR}\n"; \
-		printf "${BLUE}compiling and installing...${CLEAR}"; \
-		go install hello && printf "${GREEN}successfully compiled and installed \'hello\' executable in \'...bin/\'.${CLEAR}\n"; \
-	    };\
-	}
-	@printf "${GREEN}done installing.${CLEAR}\n"
+$(ROOT)/$(FILES)/bin/hello : $(FILE).twjr $(ROOT)/$(FILES)/src/hello/hello.go
+	@printf "${YELLOW}Installing 'hello' in 'bin/'...${CYAN}"
+	@cd $(ROOT)/$(FILES)/src/hello && \
+	  go install && \
+		printf "${GREEN}done.${CLEAR}\n" || \
+		printf "${RED}failed.${CLEAR}\n"
 
 
 # <------------------------------------->
