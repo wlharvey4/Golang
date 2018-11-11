@@ -52,7 +52,6 @@ TANGLE   : jrtangle
 jrtangle : tangle
 tangle   : $(LODESTONE) files
 
-
 # <------------------------------------->
 #               LODESTONE
 
@@ -227,73 +226,43 @@ allclean : distclean
 # APPLICATION TARGETS
 ######################
 
-# APPLICATION: HELLO, WORLD!
-############################
-.PHONY   : hello.go buildhello installhello runhello hello-world
+HELLO-SOURCE := $(ROOT)/$(FILES)/src/hello
+HELLO-BIN    := $(ROOT)/$(FILES)/bin
 
-# <------------------------------------->
-#              hello.go
+.PHONY : hello.go build-hello install-hello hello-world run-hello-world
 
-# installs the source
-
-hello.go : $(ROOT)/$(FILES)/src/hello/hello.go
-$(ROOT)/$(FILES)/src/hello/hello.go : $(FILE).twjr
+hello.go : $(HELLO-SOURCE)/hello.go
+$(HELLO-SOURCE)/hello.go : $(FILE).twjr
+	@printf "${YELLOW}Extracting the source file...${CLEAR}\n"
 	@touch $(FILE).twjr
 	@make $(LODESTONE)
+	@printf "${GREEN}done extracting.${CLEAR}\n"
 
+build-hello : $(HELLO-SOURCE)/hello
+$(HELLO-SOURCE)/hello : $(HELLO-SOURCE)/hello.go
+	@printf "${YELLOW}Building the executable...${CLEAR}"
+	@cd $(HELLO-SOURCE) && go build && \
+	    printf "${GREEN}done building.${CLEAR}\n" || \
+	    printf "${RED}failed to build.${CLEAR}\n"
 
-# <------------------------------------->
-#               buildhello
+install-hello : $(HELLO-BIN)/hello
+$(HELLO-BIN)/hello : $(HELLO-SOURCE)/hello.go $(FILE).twjr
+	@printf "${YELLOW}Installing the executable...${CLEAR}"
+	@cd $(HELLO-SOURCE) && go install && \
+	    printf "${GREEN}done installing.${CLEAR}\n" || \
+	    printf "${RED}failed to install.${CLEAR}\n"
 
-# manually builds an executable from the source and leaves it in src/hello next
-# to  hello.go;  the  go  tool  will  find it  and  move  it  during  a  manual
-# installation call.
+hello-world : $(HELLO-BIN)/hello $(FILE).twjr
+	@printf "${YELLOW}running Hello World...${CLEAR}\n"
+	@cd $(HELLO-BIN) && ./hello && \
+	    printf "${GREEN}done saying.${CLEAR}\n" || \
+	    printf "${RED}failed to say.${CLEAR}\n"
 
-buildhello : $(ROOT)/$(FILES)/src/hello/hello
-$(ROOT)/$(FILES)/src/hello/hello : $(ROOT)/$(FILES)/src/hello/hello.go $(FILE).twjr
-	@printf "${YELLOW}Building 'hello' from 'hello.go'..."
-	@cd $(ROOT)/$(FILES)/src/hello && \
-	  go build hello && \
-	    { touch $(ROOT)/$(FILES)/src/hello/hello.go; \
-	      printf "${GREEN}done.${CLEAR}\n"; } ||\
-	    printf "${RED}failed.${CLEAR}\n"
-
-
-# <------------------------------------->
-#              installhello
-
-# installs the executable into the 'bin' directory; note that the dependency of
-# hello.go should normally be hello, but because the go tool figures things out
-# on its  own, it  will actually  skip the manual  build phase  'buildhello' if
-# hello.go is current and build and move the executable on its own.
-
-installhello : $(ROOT)/$(FILES)/bin/hello
-$(ROOT)/$(FILES)/bin/hello : $(FILE).twjr $(ROOT)/$(FILES)/src/hello/hello.go
-	@printf "${YELLOW}Installing 'hello' in 'bin/'...${CYAN}"
-	@cd $(ROOT)/$(FILES)/src/hello && \
-	  go install && \
-		printf "${GREEN}done.${CLEAR}\n" || \
-		printf "${RED}failed.${CLEAR}\n"
-
-
-# <------------------------------------->
-#               hello-world
-
-# run the executable 'hello'
-
-hello-world : installhello
-	@printf "${YELLOW}Executing \'hello\' with manual compilation...${CLEAR}\n"
-	@{ cd $(ROOT)/$(FILES)/bin; \
-	  ./hello && \
-	    printf "${GREEN}done.${CLEAR}\n" || \
-	    printf "${RED}failed.${CLEAR}\n"; \
-	}
-
-run-hello-world : hello.go
-	@printf "${YELLOW}Executing \'go run hello\' with automatic compilation...${CLEAR}\n"
+run-hello-world : $(HELLO-SOURCE)/hello.go $(FILE).twjr
+	@printf "${YELLOW}running Hello World from $(ROOT)...${CLEAR}\n"
 	@go run hello && \
-	    printf "${GREEN}done.${CLEAR}\n" || \
-	    printf "${RED}failed.${CLEAR}\n"
+	    printf "${GREEN}done running.${CLEAR}\n" || \
+	    printf "${RED}failed to run.${CLEAR}\n"
 
 
 

@@ -1,8 +1,8 @@
 \input texinfo   @c -*- mode: texinfo -*-
 
 @c FILE    Golang.twjr
-@c VERSION 0.1.3
-@c DATE    2018-11-10T15:00
+@c VERSION 0.1.4
+@c DATE    2018-11-11T04:45
 @c AUTHOR  wlharvey4
 
 @c *****************************************************************************
@@ -841,7 +841,7 @@ func main() {
 @subsubsection ``Hello, World!'' in Golang
 @cindex hello, world
 
-The following @file{Makefile} targets build,  intall, and run ``Hello, World!''
+The following @file{Makefile} targets build, install, and run ``Hello, World!''
 in Go.  There must  exist a  @dfn{workspace}, which is  defined as  a directory
 structure containing  two directories: @file{src} and  @file{bin}. Packages are
 placed  inside  the  @file{src}  directory, and  the  @env{GOPATH}  environment
@@ -866,77 +866,140 @@ run-hello-world}.
 @subheading Makefile Targets for Hello, World!
 
 @<Makefile---Applications--Hook@>=
-# APPLICATION: HELLO, WORLD!
-############################
-.PHONY   : hello.go buildhello installhello runhello hello-world
+@<Makefile---Applications--Hello-Variables@>
+@<Makefile---Applications--Hello-Phony Targets@>
+@<Makefile---Applications--Hello-Hello Source@>
+@<Makefile---Applications--Hello-Build Executable@>
+@<Makefile---Applications--Hello-Install Executable@>
+@<Makefile---Applications--Hello-Run Hello World@>
+@<Makefile---Applications--Hello-Run Hello World Without Executable@>
+@
 
-# <------------------------------------->
-#              hello.go
+@c _____________________________________
 
-# installs the source
+@node Hello World Variables
+@subsubsection Hello World Variables
 
-hello.go : $(ROOT)/$(FILES)/src/hello/hello.go
-$(ROOT)/$(FILES)/src/hello/hello.go : $(FILE).twjr
-	@touch $(FILE).twjr
-	@make $(LODESTONE)
-
-
-# <------------------------------------->
-#               buildhello
-
-# manually builds an executable from the source and leaves it in src/hello next
-# to  hello.go;  the  go  tool  will  find it  and  move  it  during  a  manual
-# installation call.
-
-buildhello : $(ROOT)/$(FILES)/src/hello/hello
-$(ROOT)/$(FILES)/src/hello/hello : $(ROOT)/$(FILES)/src/hello/hello.go $(FILE).twjr
-	@printf "${YELLOW}Building 'hello' from 'hello.go'..."
-	@cd $(ROOT)/$(FILES)/src/hello && \
-	  go build hello && \
-	    { touch $(ROOT)/$(FILES)/src/hello/hello.go; \
-	      printf "${GREEN}done.${CLEAR}\n"; } ||\
-	    printf "${RED}failed.${CLEAR}\n"
-
-
-# <------------------------------------->
-#              installhello
-
-# installs the executable into the 'bin' directory; note that the dependency of
-# hello.go should normally be hello, but because the go tool figures things out
-# on its  own, it  will actually  skip the manual  build phase  'buildhello' if
-# hello.go is current and build and move the executable on its own.
-
-installhello : $(ROOT)/$(FILES)/bin/hello
-$(ROOT)/$(FILES)/bin/hello : $(FILE).twjr $(ROOT)/$(FILES)/src/hello/hello.go
-	@printf "${YELLOW}Installing 'hello' in 'bin/'...${CYAN}"
-	@cd $(ROOT)/$(FILES)/src/hello && \
-	  go install && \
-		printf "${GREEN}done.${CLEAR}\n" || \
-		printf "${RED}failed.${CLEAR}\n"
-
-
-# <------------------------------------->
-#               hello-world
-
-# run the executable 'hello'
-
-hello-world : installhello
-	@printf "${YELLOW}Executing \'hello\' with manual compilation...${CLEAR}\n"
-	@{ cd $(ROOT)/$(FILES)/bin; \
-	  ./hello && \
-	    printf "${GREEN}done.${CLEAR}\n" || \
-	    printf "${RED}failed.${CLEAR}\n"; \
-	}
-
-run-hello-world : hello.go
-	@printf "${YELLOW}Executing \'go run hello\' with automatic compilation...${CLEAR}\n"
-	@go run hello && \
-	    printf "${GREEN}done.${CLEAR}\n" || \
-	    printf "${RED}failed.${CLEAR}\n"
+@<Makefile---Applications--Hello-Variables@>=
+HELLO-SOURCE := $(ROOT)/$(FILES)/src/hello
+HELLO-BIN    := $(ROOT)/$(FILES)/bin
 
 @
 
 
+@c _____________________________________
+
+@node Hello World Phony Targets
+@subsubsection Hello World Phony Targets
+
+@<Makefile---Applications--Hello-Phony Targets@>=
+.PHONY : hello.go build-hello install-hello hello-world run-hello-world
+
+@
+
+@c _____________________________________
+
+@node Hello World Source File
+@subsubsection Hello World Source File
+
+If the source file  @file{hello.go} does not exist, or is  out of date compared
+to the  @file{texi} file,  then it  must be sourced,  which is  accomplished by
+calling  the  $(LODESTONE)  target  (@pxref{LODESTONE}) after  making  sure  the
+@file{texi} source file is touched.
+
+@<Makefile---Applications--Hello-Hello Source@>=
+hello.go : $(HELLO-SOURCE)/hello.go
+$(HELLO-SOURCE)/hello.go : $(FILE).twjr
+	@printf "${YELLOW}Extracting the source file...${CLEAR}\n"
+	@touch $(FILE).twjr
+	@make $(LODESTONE)
+	@printf "${GREEN}done extracting.${CLEAR}\n"
+
+@
+
+@c _____________________________________
+
+@node Build Hello Target
+@subsubsection Build Hello Target
+
+To build  an executable, @command{cd} into  the package directory and  give the
+command @samp{go build}. An executable will  be compiled and placed next to the
+source file.
+
+@<Makefile---Applications--Hello-Build Executable@>=
+build-hello : $(HELLO-SOURCE)/hello
+$(HELLO-SOURCE)/hello : $(HELLO-SOURCE)/hello.go
+	@printf "${YELLOW}Building the executable...${CLEAR}"
+	@cd $(HELLO-SOURCE) && go build && \
+	    printf "${GREEN}done building.${CLEAR}\n" || \
+	    printf "${RED}failed to build.${CLEAR}\n"
+
+@
+
+@c _____________________________________
+
+@node Install Hello Target
+@subsubsection Install Hello Target
+
+To install  the executable, the  @command{go} tool can  be run from  within the
+@file{src/hello} directory  after the executable  iss compiled in  the previous
+step, then  executing the command  @command{go install}. This  physically moves
+the executable into the @file{bin/} directory.
+
+@<Makefile---Applications--Hello-Install Executable@>=
+install-hello : $(HELLO-BIN)/hello
+$(HELLO-BIN)/hello : $(HELLO-SOURCE)/hello.go $(FILE).twjr
+	@printf "${YELLOW}Installing the executable...${CLEAR}"
+	@cd $(HELLO-SOURCE) && go install && \
+	    printf "${GREEN}done installing.${CLEAR}\n" || \
+	    printf "${RED}failed to install.${CLEAR}\n"
+
+@
+
+@c _____________________________________
+
+@node Run Hello World
+@subsubsection Run Hello World
+
+In this target, the @file{Makefile} first extracts the @file{hello.go} into the
+@file{src/hello}, moves into that directory to compile @file{hello}, then moves
+into that  directory again to  @command{install} the executble  in @file{bin/},
+then finally moves into the  @file{bin/} directory and executes the executable,
+@file{hello}.
+
+@<Makefile---Applications--Hello-Run Hello World@>=
+hello-world : $(HELLO-BIN)/hello $(FILE).twjr
+	@printf "${YELLOW}running Hello World...${CLEAR}\n"
+	@cd $(HELLO-BIN) && ./hello && \
+	    printf "${GREEN}done saying.${CLEAR}\n" || \
+	    printf "${RED}failed to say.${CLEAR}\n"
+
+@
+
+@c _____________________________________
+
+@node Run Hello World Without Executable
+@subsubsection Run Hello World Without Executable
+
+In  this   target,  the  @file{Makefile}  extracts   @file{hello.go}  into  the
+@file{src/hello} directory,  then immediately  invokes the  command @command{go
+run hello} without  it actually needing an executable to  exist in @file{bin/}.
+The  @command{go} tool  compiles  the @file{hello}  executable,  runs it,  then
+discards it.
+
+This can be directly observed by running the @command{hello-world}, above, then
+deleting the executable, then  running this command, @command{run-hello-world}.
+It can be  observed that the @file{Makefile} does not  explicitly recompile the
+executable before running, and yet it still produces the correct output.
+
+@<Makefile---Applications--Hello-Run Hello World Without Executable@>=
+run-hello-world : $(HELLO-SOURCE)/hello.go $(FILE).twjr
+	@printf "${YELLOW}running Hello World from $(ROOT)...${CLEAR}\n"
+	@go run hello && \
+	    printf "${GREEN}done running.${CLEAR}\n" || \
+	    printf "${RED}failed to run.${CLEAR}\n"
+
+@
 
 
 @c END Chapter Introduction
@@ -1052,6 +1115,8 @@ To help you get started with installing Golang, please visit Golang's web site
 devoted to installing the language:
 
 @url{https://golang.org/doc/install, Installing Golang}
+
+Also, @xref{Download}, above.
 
 
 @c .....................................
@@ -1399,7 +1464,10 @@ TANGLE   : jrtangle
 jrtangle : tangle
 tangle   : $(LODESTONE) files
 
+@
 
+@anchor{LODESTONE}
+@<Makefile---TWJR Targets@>=
 # <------------------------------------->
 #               LODESTONE
 
