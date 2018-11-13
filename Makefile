@@ -4,6 +4,8 @@
 # VARIABLE DEFINITIONS
 ######################
 LODESTONE := .lodestone
+README    := README.md
+GIT       := .git*
 
 SHELL := $$(which bash)
 
@@ -13,9 +15,9 @@ FILES := workspace
 
 # DEFAULT Target
 ################
-.PHONY : TWJR JRTANGLE TANGLE JRWEAVE WEAVE TEXI INFO PDF HTML
+.PHONY : TWJR JRTANGLE TANGLE JRWEAVE WEAVE TEXI INFO PDF HTML DIST
 .PHONY : default twjr twjrkeep jrtangle tangle
-.PHONY : jrweave weave texi info pdf html newmakefile
+.PHONY : jrweave weave texi info pdf html newmakefile dist
 .PHONY : files
 
 default : TWJR
@@ -113,6 +115,15 @@ $(FILE).texi : $(FILE).twjr
 
 
 # <------------------------------------->
+#                 DIST
+
+# Runs jrtangle jrweave distclean; prepares for git commit
+
+DIST : dist
+dist : jrtangle jrweave distclean
+
+
+# <------------------------------------->
 #                 INFO
 #               OPENINFO
 
@@ -170,7 +181,7 @@ openhtml : HTML
 
 # CLEAN TARGETS
 ################
-.PHONY : clean dirclean distclean worldclean allclean
+.PHONY : clean dirclean distclean allclean
 
 # <------------------------------------->
 #                clean
@@ -186,16 +197,20 @@ clean :
 # <------------------------------------->
 #               dirclean
 
-# after clean: remove all build and miscellaneous files, leaving only
-# TWJR, TEXI, INFO, HTML, PDF, Makefile & the source documents.
+# after clean:  remove all  build and miscellaneous  files, leaving  only TWJR,
+# TEXI,  INFO, HTML,  PDF,  Makefile,  README, .git,  .gitignore  & the  source
+# documents.
 
 dirclean : clean
 	@printf "${WHITEBOLD}Dir-cleaning...${CYAN}\n"
 	@for file in *; do         \
 	  case $$file in           \
+            '.' | '..')          ;;\
 	    $(FILE)* | Makefile) ;;\
 	    $(FILES)*)	 	 ;;\
 	    $(LODESTONE))        ;;\
+	    $(README))		 ;;\
+	    $(GIT))		 ;;\
 	    *) rm -vfr $$file	 ;;\
 	  esac                     \
 	done

@@ -5,8 +5,8 @@
 \input texinfo   @c -*- mode: texinfo -*-
 
 @c FILE    Golang.twjr
-@c VERSION 0.1.5
-@c DATE    2018-11-12T22:50
+@c VERSION 0.1.6
+@c DATE    2018-11-13T05:55
 @c AUTHOR  wlharvey4
 
 @c *****************************************************************************
@@ -233,15 +233,14 @@
 @end ifnottex
 
 
-@c <------------------------------------->
-@c The initial_setup code runs as a script
-@c in a  BEGIN section  of AWK  during the
-@c tangling  phase  before any  files  are
-@c extracted.   Here  create  a  directory
-@c structure for  project files,  plus any
-@c other initialization that might need to
-@c be   done.    Files  are   moved   into
-@c directories in a @post_create command.
+@c -----------------------------------------------------------------------------
+@c INITIAL_SETUP
+@c -----------------------------------------------------------------------------
+
+@c The initial_setup code runs as a script in a BEGIN section of AWK during the
+@c tangling  phase before  any files  are  extracted. Here  create a  directory
+@c structure for project  files, plus any other initialization  that might need
+@c to be done. Files are moved into directories in a @post_create command.
 
 @c create a  basic Golang  workspace, with
 @c bin and src directories.
@@ -508,6 +507,10 @@ Preface
 * Overview::                    An overview of the @value{DOCUMENT}.
 * Conventions::                 Typographical conventions.
 
+What Is Covered
+
+* The Readme::
+
 Introduction
 
 * Installation::
@@ -586,6 +589,10 @@ Code Chunk Summaries
 
 
 
+
+@c <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+@part Front Matter
+@c <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 
 
 @c %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -755,6 +762,76 @@ enjoy.  Cheers.
 Overview text and chapter by chapter description here.
 
 
+@c .....................................
+
+@menu
+* The Readme::
+@end menu
+
+@node The Readme,  , Overview, Overview
+@unnumberedsubsec The Readme
+@cindex readme
+
+@need 400
+@anchor{README-md}
+@cdindex @r{@{@file{README.md}@}}, definition
+@noindent
+@r{@{@file{README.md}@}} @equiv{}
+@example
+# GOLANG
+
+## About This Source File
+
+This  document (`my_template.twjr`)  is  a *literate*  source  document. It  is
+designed to produce an `Info` file (best read from within Emacs, but there is a
+stand-alone Info  reader that can  be used),  a `Pdf` document  (generated from
+LaTeX source  code by PDFTeX),  an `HTML` web  site, `Docbook` source  code, an
+`XML`  document, and  a  plain text  document. In  addition.  it also  produces
+working  code   in  any  language  (so   long  as  your  system   contains  the
+infrastructure to  run the code). For  example, this `README` file  was drafted
+within this source document  and extracted as a separate file,  as was also the
+`Makefile`.  This *literate*  document's  features are  targeted  via a  custom
+`Makefile` that is  also a part of  this document, and extracted  as a separate
+file, and is dynamic in the sense that  if you update it, you can produce a new
+version with  a simple call to  a `make` target. It  is designed to be  able to
+produce any  number of working software  packages of any language  contained at
+any  number of  different  locations on  your  system, all  with  a single  or,
+alternatively, multiple `make` calls, depending on the granularity you need.
+
+The Github  repository contains this  source document,  a Makefile that  can be
+used  to work  with the  project, as  well as  a `Texinfo`  file that  has been
+generated from  this `Twjr` file,  this README,  and a `.gitignore`  file. Most
+computer systems have or can easily get the `make`, and `texinfo` programs that
+are needed to  process the `Texinfo` file into the  various end documents, such
+as `Info`,  `Pdf`, `HTML`, etc. Your  system will need, in  addition to `make`,
+and `texinfo`, Gnu  AWK (`gawk`), and TexiwebJr to make  changes to this source
+document and  process it  into a  `Texinfo` file and  extract its  programs and
+files.  Your system  should also  have  the equivalent  of Bash  version 4,  as
+version 4  has some parameter capabilities  that earlier versions do  not. Note
+that most  versions of Mac OS  have version 3  of Bash installed as  a default.
+Version 4 can be added using Homebrew or MacPorts very easily. In the past, Mac
+OS has  also shipped with a  version of `texinfo`  that is below 6.5.  You will
+also need to update `texinfo` to at least 6.5 if that is the case.
+
+## How It Works
+
+## Resources
+
+* [TexiwebJr](https://github.com/arnoldrobbins/texiwebjr)
+* [Texinfo](https://www.gnu.org/software/texinfo/)
+* [Gnu AWK (gawk)](https://www.gnu.org/software/gawk/)
+* [Gnu Bash](https://www.gnu.org/software/bash/)
+* [TeX Live](https://www.tug.org/texlive/)
+
+@end example
+@iftex
+@smallfonts @rm
+@end iftex
+@iftex
+@textfonts @rm
+@end iftex
+
+
 
 
 @c -----------------------------------------------------------------------------
@@ -827,6 +904,12 @@ in this sentence.  Finally, file names are indicated like this:
 @c %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+
+
+
+@c <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+@part Part I
+@c <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 
 
 
@@ -1270,6 +1353,13 @@ This chunk is called by @r{<@i{Makefile---Applications--Hook}>}; see its first d
 @c /////////////////////////////////////////////////////////////////////////////
 
 
+
+
+
+
+@c <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+@part Part II
+@c <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 
 
 
@@ -2065,6 +2155,13 @@ Patterns}
 
 
 
+@c <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+@part Appendices
+@c <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
+
+
+
 
 
 @c *****************************************************************************
@@ -2108,6 +2205,8 @@ The TWJR Targets
 @command{twjrkeep dirclean}
 @item jrtangle
 @command{jrtangle $(FILE).twjr}
+@item
+@command{jrweave $(FILE).twjr > $(FILE).texi}
 @item newmakefile
 @command{jrtangle allclean}
 @end table
@@ -2219,6 +2318,8 @@ not be changed or otherwise touched (pun intended).
 # VARIABLE DEFINITIONS
 ######################
 LODESTONE := .lodestone
+README    := README.md
+GIT       := .git*
 
 SHELL := $$(which bash)
 
@@ -2307,9 +2408,9 @@ which  is  directly  responsible  for  producing  the  output  files.   If  the
 @example
 # DEFAULT Target
 ################
-.PHONY : TWJR JRTANGLE TANGLE JRWEAVE WEAVE TEXI INFO PDF HTML
+.PHONY : TWJR JRTANGLE TANGLE JRWEAVE WEAVE TEXI INFO PDF HTML DIST
 .PHONY : default twjr twjrkeep jrtangle tangle
-.PHONY : jrweave weave texi info pdf html newmakefile
+.PHONY : jrweave weave texi info pdf html newmakefile dist
 .PHONY : files
 
 default : TWJR
@@ -2483,6 +2584,15 @@ $(FILE).texi : $(FILE).twjr
 
 
 # <------------------------------------->
+#                 DIST
+
+# Runs jrtangle jrweave distclean; prepares for git commit
+
+DIST : dist
+dist : jrtangle jrweave distclean
+
+
+# <------------------------------------->
 #                 INFO
 #               OPENINFO
 
@@ -2579,7 +2689,7 @@ except the @acronym{TWJR} file and the @file{Makefile}.
 @example
 # CLEAN TARGETS
 ################
-.PHONY : clean dirclean distclean worldclean allclean
+.PHONY : clean dirclean distclean allclean
 
 # <------------------------------------->
 #                clean
@@ -2595,16 +2705,20 @@ clean :
 # <------------------------------------->
 #               dirclean
 
-# after clean: remove all build and miscellaneous files, leaving only
-# TWJR, TEXI, INFO, HTML, PDF, Makefile & the source documents.
+# after clean:  remove all  build and miscellaneous  files, leaving  only TWJR,
+# TEXI,  INFO, HTML,  PDF,  Makefile,  README, .git,  .gitignore  & the  source
+# documents.
 
 dirclean : clean
     @@printf "$@{WHITEBOLD@}Dir-cleaning...$@{CYAN@}\n"
     @@for file in *; do         \
       case $$file in           \
+            '.' | '..')          ;;\
         $(FILE)* | Makefile) ;;\
         $(FILES)*)       ;;\
         $(LODESTONE))        ;;\
+        $(README))       ;;\
+        $(GIT))      ;;\
         *) rm -vfr $$file    ;;\
       esac                     \
     done
@@ -2685,8 +2799,6 @@ The called chunk @r{<@i{Makefile---Applications--Hook}>} is first defined at
 @end iftex
 
 
-
-
 @c END The Makefile
 @c /////////////////////////////////////////////////////////////////////////////
 
@@ -2723,6 +2835,9 @@ and the code chunk references.
 @item @r{@{@file{Makefile}@}}
 This chunk is defined in
 @ref{Makefile}.
+@item @r{@{@file{README.md}@}}
+This chunk is defined in
+@ref{README-md}.
 @item @r{@{@file{hello.go}@}}
 This chunk is defined in
 @ref{hello-go}.
@@ -2860,6 +2975,13 @@ This chunk is called by @r{@{@file{Makefile}@}}; see its first definition at @re
 @c %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+
+
+
+
+@c <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+@part Back Matter
+@c <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 
 
 
