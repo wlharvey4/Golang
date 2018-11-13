@@ -1,8 +1,8 @@
 \input texinfo   @c -*- mode: texinfo -*-
 
 @c FILE    Golang.twjr
-@c VERSION 0.1.4
-@c DATE    2018-11-11T04:45
+@c VERSION 0.1.5
+@c DATE    2018-11-12T22:50
 @c AUTHOR  wlharvey4
 
 @c *****************************************************************************
@@ -1016,9 +1016,18 @@ run-hello-world : $(HELLO-SOURCE)/hello.go $(FILE).twjr
 @c                              CHAPTER ONE
 
 @node Programming With Google Go
-@chapter Coursera Specialization: Programming With Google Go
+@chapter Programming With Google Go Specialization
 @cindex Programming With Google Go Specialization
 @cindex Specialization, Programming With Google Go
+
+@quotation
+This  specialization introduces  the Go  programming language  from Google  and
+provides learners  with an overview  of Go's special features.  Upon completing
+the three-course sequence,  learners will have gained the  knowledge and skills
+needed to create concise, efficient, and clean applications using Go.
+@author UC Irvine
+@end quotation
+
 
 @heading Welcome To The Specialization: Programming With Google Go
 
@@ -1033,6 +1042,15 @@ to a later  time. For now, please disregard the  occasional references that the
 instructor makes to this fourth course.)
 
 @subheading The Courses in the Specialization
+
+@enumerate
+@item
+Getting Started With Go
+@item
+Functions, Methods, and Interfaces in Go
+@item
+Concurrency in Go
+@end enumerate
 
 The first course, @emph{Getting Started with Go}, introduces the basic elements
 of the language including unique features such as slices that are not available
@@ -1059,12 +1077,23 @@ clarification and further learning.
 
 
 @c -----------------------------------------------------------------------------
-@c      			Section: Getting Started
+@c    			SECTION: Getting Started
 
 @node Getting Started
 @section Course One: Getting Started With Google Go
 @cindex Getting Started With Google Go, First Course
 @cindex Specialization, First Course
+
+@heading About the Course
+Learn  the  basics  of  Go,  an open  source  programming  language  originally
+developed by a team  at Google and enhanced by many  contributors from the open
+source  community.  This  course  is designed  for  individuals  with  previous
+programming experience using  such languages as C, Python, or  Java, and covers
+the fundamental elements of Go.  Topics include data types, protocols, formats,
+and writing code that incorporates RFCs and JSON. Most importantly, you’ll have
+a chance to practice writing Go  programs and receive feedback from your peers.
+Upon completing  this course, you'll be  able to implement simple  Go programs,
+which will prepare you for subsequent study at a more advanced level.
 
 @url{https://www.coursera.org/learn/golang-getting-started/home/welcome,
 Getting Started with Google Go}
@@ -1107,8 +1136,144 @@ you even like this language at all, and if you can be comfortable with it.
 
 @c .....................................
 
+@node Course One Syllabus
+@subsection Course One Syllabus
+@cindex syllabus, course one
+
+@itemize
+@item
+Module 1: Getting Started with Go
+
+This first module  gets you started with Go. You'll  learn about the advantages
+of using  Go and begin  exploring the  language's features. Midway  through the
+module,  you’ll take  a  break from  "theory" and  install  the Go  programming
+environment on your computer.  At the end of the module,  you'll write a simple
+program that displays “Hello, World” on your screen.
+
+@itemize
+@item
+Overview
+@item
+Why Should I Learn Go? (Advantages of Go)
+@item
+Objects
+@item
+Concurrency
+@item
+Installing Go
+@item
+Workspaces & Packages
+@item
+Go Tool
+@item
+Variables
+@item
+Variable Initialization
+@item
+Peer Review · Module 1 Activity: "Hello, world!"
+@item
+Quiz · Module 1 Quiz
+@end itemize
+
+@item
+Module 2: Basic Data Types
+
+Now that you’ve set up your programming environment and written a test program,
+you’re ready to dive  into data types. This module introduces  data types in Go
+and gives you practice writing routines that manipulate different kinds of data
+objects, including floating-point numbers and strings.
+
+@itemize
+@item
+Overview
+@item
+Pointers
+@item
+Variable Scope
+@item
+Deallocating Memory
+@item
+Garbage Collection
+@item
+Comments, Printing, Integers
+@item
+Ints, Floats, Strings
+@item
+String Packages
+@item
+Constants
+@item
+Control Flow
+@item
+Control Flow, Scan
+@item
+Module 2 Activity: trunc.go
+@item
+Module 2 Activity: findian.go
+@item
+Module 2 Quiz
+@end itemize
+
+@item
+Module 3: Composite Data Types
+
+At this  point, we’re  ready to  move into more  complex data  types, including
+arrays, slices,  maps, and structs.  As in the  previous module, you’ll  have a
+chance to practice writing code that makes use of these data types.
+
+@itemize
+@item
+Module 3 Overview
+@item
+Arrays
+@item
+Slices
+@item
+Variable Slices
+@item
+Hash Tables
+@item
+Maps
+@item
+Structs
+@item
+Peer Review · Module 3 Activity: slice.go
+@item
+Quiz · Module 3 Quiz
+@end itemize
+
+@item
+Module 4: Protocols and Formats
+
+This final  module of the  course introduces the  use of remote  function calls
+(RFCs) and JavaScript Object Notation (JSON)  in Go. You’ll learn how to access
+and  manipulate data  from external  files, and  have an  opportunity to  write
+several routines using Go that exercise this functionality.
+
+@itemize
+@item
+Module 4 Overview
+@item
+RFCs
+@item
+JSON
+@item
+File Access, ioutil
+@item
+File Access, os
+@item
+Peer Review · Module 4 Activity: makejson.go
+@item
+Peer Review · Module 4 Activity: makejson.go
+@end itemize
+
+@end itemize
+
+
+@c .....................................
+
 @node Installing Golang
-@section Installing Golang
+@subsection Installing Golang
 @cindex install golang
 
 To help you get started with installing Golang, please visit Golang's web site
@@ -1146,6 +1311,106 @@ or more source packages.
 } and building a simple program, as follows.
 
 
+@c .....................................
+
+@node Module 1 --- Overview
+@subsection Module 1 --- Overview
+@cindex module 1 overview
+@cindex overview
+
+@heading Lecture Transcript
+
+@subheading Why Go
+Point of  this first  module is  to talk  about more  fully four  things. First
+thing, is we want  to talk about Go, why it's good, why  is unique.  Right?  We
+want to motivate you,  to just tell you why do you need  even learn this in the
+first place  as compared to existing  languages because there are  many, right?
+So, we'll  talk about  that.
+
+@subheading Installing Go
+Then, we'll  have you start using  Go.  So, this specifically  means installing
+the Go  environment and compiling your  first program, you need  to get through
+that before  you can  go on with  the rest  of the course.  So, we'll  walk you
+through the installation process and show you  how to compile a program and see
+if it works  as a sanity check  for the whole setup.
+
+@subheading Code Organization; Workspace
+Then, will  start talking  about the code  organization, the  recommended court
+organization. So,  workspace, how you define  your workspace, how it  should be
+organized, how Go  code is organized into  packages to allow you  to share. So,
+big point  of Go is  sharing with other people.   Right?  Because if  you think
+about any real software you write, it's always big.  Right? You work with other
+people's. Almost never just you alone.  So,  you got to share and packages help
+to make  that easy and  to organize the  code so you  can trade your  code with
+other  people.
+
+@subheading Variables
+Then, at  the end of this  module, we'll start talking  about variables.  Start
+talk about the language itself, so the variables, what types there are, and how
+do you do scoping, how variable  scoping happens, how you basically resolve the
+value of a variable depending on where it occurs and where it's defined.
+
+@c _____________________________________
+
+@node Advantages of Go
+@subsubsection Advantages of Go
+
+@itemize
+@item
+Runs fast
+@item
+Garbage collection
+@item
+Simple objects
+@item
+Concurrency
+@item
+@end itemize
+
+@c _____________________________________
+
+@node Objects in Go
+@subsubsection Objects in Go
+@cindex objects in go
+
+@cindex structs
+Go is  an object-oriented language, but  weakly object oriented.  It  has fewer
+features  than you  would see  in  another object-oriented  language.  Go  uses
+@def{structs}, not  classes, but  you can associate  methods with  the structs.
+There is no inheritance in Go, no constructors, no generics.  This makes Go
+easier to code and more efficient to run.
+
+@c _____________________________________
+
+@node Concurrency in Go
+@subsubsection Concurrency in Go
+@cindex concurrency
+
+One of the  big advantages of Go  is its concurrency.  A lot  of the motivation
+for concurrency comes from the need for speed.  Go helps get around performance
+limitations.  @def{Concurrency} is the management of multiple tasks at the same
+time.  Concurrent programming enables @def{parallelism}.  The programmer has to
+decide how to partition the code.  Go has a lot of concurrency primitives built
+into the language and efficiencly implemented.
+
+
+@c .....................................
+
+@node Module 2
+@subsection Module 2
+
+
+@c .....................................
+
+@node Module 3
+@subsection Module 3
+
+
+@c .....................................
+
+@node Module 4
+@subsection Module 4
+
 
 
 
@@ -1156,6 +1421,13 @@ or more source packages.
 @cindex Specialization, Course Two
 @cindex Functions Methods and Interfaces
 
+@heading About the Course
+Continue your  exploration of the  Go programming  language as you  learn about
+functions,  methods,  and  interfaces.  Topics include  the  implementation  of
+functions,  function  types,  object-orientation  in  Go,  methods,  and  class
+instantiation.  As  with the  first  course  in  this  series, you’ll  have  an
+opportunity to create your own Go  applications so you can practice what you’re
+learning.
 
 
 
@@ -1166,7 +1438,12 @@ or more source packages.
 @cindex Specialization, Course Three
 @cindex Concurrency in Go
 
-
+@heading About the Course
+Learn  how to  implement concurrent  programming in  Go. Explore  the roles  of
+channels  and goroutines  in implementing  concurrency. Topics  include writing
+goroutines  and implementing  channels for  communications between  goroutines.
+Course activities will  allow you to exercise Go’s  capabilities for concurrent
+programming by developing several example programs.
 
 
 
@@ -1175,6 +1452,311 @@ or more source packages.
 
 @c END Chapter First
 @c /////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+@c *****************************************************************************
+@c                        CHAPTER: Documentation
+
+@node Go Documentation
+@chapter Go Documentation
+@cindex documentation
+
+@cindex documentation home
+@url{https://golang.org/doc/, Documentation}
+
+@quotation
+The Go programming language is an  open source project to make programmers more
+productive.
+
+Go is  expressive, concise,  clean, and  efficient. Its  concurrency mechanisms
+make it easy to write programs that get the most out of multicore and networked
+machines,  while its  novel type  system enables  flexible and  modular program
+construction. Go  compiles quickly to machine  code yet has the  convenience of
+garbage  collection  and  the  power  of  run-time  reflection.  It's  a  fast,
+statically  typed,  compiled language  that  feels  like a  dynamically  typed,
+interpreted language.
+@author Golang Team
+@end quotation
+
+@itemize
+
+@subheading Installing Go
+
+@item
+@url{https://golang.org/doc/install, Installing Go}
+
+@subheading Learning Go
+
+@cindex tour
+@item
+@url{https://tour.golang.org/, A Tour of Go}
+
+@cindex syntix intro
+@cindex data structures intro
+@cindex methods
+@cindex interfaces
+@cindex concurrency primatives
+An interactive introduction  to Go in three sections. The  first section covers
+basic syntax and data structures;  the second discusses methods and interfaces;
+and the  third introduces Go's  concurrency primitives. Each  section concludes
+with a few exercises so you can  practice what you've learned. You can take the
+tour online or install it locally with:
+
+@cindex @command{tour} binary
+@example
+$ go get golang.org/x/tour
+@end example
+
+This  will  place  the  @file{tour}   binary  in  your  workspace's  @file{bin}
+directory.
+
+@cindex write go code
+@item
+@url{https://golang.org/doc/code.html, How To Write Go Code}
+
+@cindex @command{go} command
+@cindex packages
+@cindex tests
+Also    available   as    a   @url{https://www.youtube.com/watch?v=XCsL89YtqCs,
+screencast}, this  doc explains how to  use the @url{https://golang.org/cmd/go/
+@command{go command}} to fetch, build,  and install packages, commands, and run
+tests.
+
+@cindex editors
+@cindex editor plugins
+@cindex IDEs
+@item
+@url{https://golang.org/doc/editors.html, Editor Plugins and IDEs}
+
+A  document that  summarizes  commonly used  editor plugins  and  IDEs with  Go
+support.
+
+@cindex effective go
+@cindex writing go code
+@item
+@url{https://golang.org/doc/effective_go.html, Effective Go}
+
+A document that  gives tips for writing  clear, idiomatic Go code.  A must read
+for any new Go programmer. It augments the tour and the language specification,
+both of which should be read first.
+
+@cindex diagnostics
+@item
+@url{https://golang.org/doc/diagnostics.html, Diagnostics}
+
+Summarizes tools and methodologies to diagnose problems in Go programs.
+
+@cindex FAQ
+@item
+@url{https://golang.org/doc/faq, FAQ}
+
+Answers to common questions about Go.
+
+@cindex wiki
+@item
+@url{https://golang.org/wiki, Go Wiki}
+
+A wiki maintained by the Go community.
+
+@cindex learning resources
+See the @url{https://golang.org/wiki/Learn, Learn page} at the Wiki for more Go
+learning resources.
+
+@subheading References
+
+@item
+@url{https://golang.org/pkg/, Package Documentation}
+
+@cindex standard library
+The documentation for the Go standard library.
+
+@cindex command documentation
+@item
+@url{https://golang.org/doc/cmd, Command Documentation}
+
+@cindex go tools, documentation
+The documentation for the Go tools.
+
+@cindex language specification
+@cindex specification, language
+@item
+@url{https://golang.org/ref/spec, Language Specification}
+
+The official Go Language specification.
+
+@item
+@url{https://golang.org/ref/mem, Memory Model}
+
+A document that specifies the conditions under which reads of a variable in one
+goroutine can  be guaranteed to observe  values produced by writes  to the same
+variable in a different goroutine.
+
+@item
+@url{https://golang.org/doc/devel/release.html, Release History}
+
+A summary of the changes between Go releases.
+
+@cindex articles
+@subheading Articles
+
+@cindex go blog
+@cindex blog on go
+@item
+@url{https://blog.golang.org/, Go Blog}
+
+@item
+Codewalk
+
+@cindex tour of go
+Guided tours of Go programs.
+
+@itemize
+@cindex functions, first class
+@item
+First-Class Functions in Go
+@cindex Markov chain algorithm
+@item
+Generating arbitrary text: a Markov chain algorithm
+@cindex memory
+@item
+Share Memory by Communicating
+@cindex web applications, building
+@item
+Writing Web Applications - building a simple web application.
+@end itemize
+
+@item
+Language
+
+@itemize
+@cindex json-rpc
+@item
+JSON-RPC: a tale of interfaces
+@cindex syntax, declaration
+@item
+Go's Declaration Syntax
+@cindex defer
+@cindex panic
+@cindex recover
+@item
+Defer, Panic, and Recover
+@cindex concurrency patterns
+@item
+Go Concurrency Patterns: Timing out, moving on
+@cindex slices
+@item
+Go Slices: usage and internals
+@cindex interfaces
+@cindex gif decoder
+@item
+A GIF decoder: an exercise in Go interfaces
+@cindex error handling
+@item
+Error Handling and Go
+@cindex organizing code
+@item
+Organizing Go code
+@end itemize
+
+@cindex packages
+@item
+Packages
+
+@itemize
+@cindex json package
+@item
+JSON and Go - using the json package.
+@cindex gob package
+@item
+Gobs of data - the design and use of the gob package.
+@cindex reflection
+@cindex reflect package
+@item
+The Laws of Reflection - the fundamentals of the reflect package.
+@cindex image package
+@item
+The Go image package - the fundamentals of the image package.
+@cindex image/draw package
+@item
+The Go image/draw package - the fundamentals of the image/draw package.
+@end itemize
+
+@cindex tools
+@item
+Tools
+@itemize
+@cindex about, go
+@item
+About the Go command - why we wrote it, what it is, what it's not, and how to use it.
+@cindex debugging
+@cindex gdb
+@item
+Debugging Go Code with GDB
+@cindex race detector
+@item
+Data Race Detector - a manual for the data race detector.
+@cindex assembler
+@item
+A Quick Guide to Go's Assembler - an introduction to the assembler used by Go.
+@cindex c, linking with
+@item
+C? Go? Cgo! - linking against C code with cgo.
+@cindex godoc
+@cindex documenting go code
+@item
+Godoc: documenting Go code - writing good documentation for godoc.
+@cindex profiling
+@item
+Profiling Go Programs
+@cindex race detector
+@item
+Introducing the Go Race Detector - an introduction to the race detector.
+@end itemize
+
+@subheading Talks
+
+@cindex tour of go, video
+@item
+@url{https://research.swtch.com/gotour, A Video Tour of Go}
+
+@cindex web crawler, build
+Three things  that make Go  fast, fun, and productive:  interfaces, reflection,
+and concurrency. Builds a toy web crawler to demonstrate these.
+
+@item
+@url{https://vimeo.com/53221560, Code That Grows With Grace}
+
+@cindex code adaptability
+One of Go's  key design goals is  code adaptability; that it should  be easy to
+take a simple design and build upon it in a clean and natural way. In this talk
+Andrew Gerrand describes a simple "chat  roulette" server that matches pairs of
+incoming TCP connections, and then use Go's concurrency mechanisms, interfaces,
+and standard  library to  extend it  with a web  interface and  other features.
+While  the  function of  the  program  changes dramatically,  Go's  flexibility
+preserves the original design as it grows.
+
+@cindex concurrency patterns
+@item
+@url{https://www.youtube.com/watch?v=f6kdp27TYZs, Concurrency Patterns}
+
+@cindex concurrency
+@cindex network services
+Concurrency is  the key  to designing high  performance network  services. Go's
+concurrency primitives (goroutines and channels) provide a simple and efficient
+means  of expressing  concurrent  execution. In  this talk  we  see how  tricky
+concurrency problems can be solved gracefully with simple Go code.
+
+@item
+@url{https://www.youtube.com/watch?v=QDDwwePbDtw,      Advanced     Concurrency
+Patterns}
+
+@end itemize
+
 
 @c END CHAPTERS
 @c /////////////////////////////////////////////////////////////////////////////
